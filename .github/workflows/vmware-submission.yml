@@ -1,0 +1,22 @@
+name: VMware catalog submission validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: add-vmware-monitor
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Validate entry (same command as task validate)
+        run: go run ./cmd/validate --name vmware-monitor
+      - name: Build image and static tool catalog (same command as task build)
+        run: go run ./cmd/build --tools vmware-monitor
